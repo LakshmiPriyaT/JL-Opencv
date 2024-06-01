@@ -1,0 +1,71 @@
+import os: Imports the os module, which provides a way to interact with the operating system.
+
+import cv2: Imports the OpenCV library, which is used for image and video processing.
+
+from PIL import Image: Imports the Image class from the PIL (Pillow) library, which is used for image processing.
+
+def resize_images(path):: Defines a function resize_images that takes a path argument. This function will resize all images in the specified directory.
+
+mean_height = 0: Initializes the mean_height variable to 0, which will be used to calculate the average height of images.
+
+mean_width = 0: Initializes the mean_width variable to 0, which will be used to calculate the average width of images.
+
+num_of_images = 0: Initializes the num_of_images variable to 0, which will be used to count the number of images.
+
+for file in os.listdir(path):: Iterates over all files in the specified directory.
+
+if file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.png'):: Checks if the file is an image file (JPEG or PNG).
+
+img = Image.open(os.path.join(path, file)): Opens the image file using the Image.open method from Pillow.
+
+width, height = img.size: Gets the width and height of the image.
+
+mean_width += width: Adds the width of the current image to the mean_width variable.
+
+mean_height += height: Adds the height of the current image to the mean_height variable.
+
+num_of_images += 1: Increments the num_of_images variable to count the current image.
+
+mean_width //= num_of_images: Calculates the average width by dividing the total width by the number of images.
+
+mean_height //= num_of_images: Calculates the average height by dividing the total height by the number of images.
+
+for file in os.listdir(path):: Iterates over all files in the specified directory again.
+
+if file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.png'):: Checks if the file is an image file (JPEG or PNG).
+
+img = Image.open(os.path.join(path, file)): Opens the image file using the Image.open method from Pillow.
+
+img_resized = img.resize((mean_width, mean_height), Image.ANTIALIAS): Resizes the image to the average width and height calculated earlier using the resize method from Pillow.
+
+img_resized.save(os.path.join(path, file), 'JPEG', quality=95): Saves the resized image to the same path with the same filename, overwriting the original file. The image is saved in JPEG format with a quality of 95.
+
+print(file, " is resized"): Prints a message indicating that the image has been resized.
+
+def video_generator(path):: Defines a function video_generator that takes a path argument. This function will generate a video from images in the specified directory.
+
+video_name = "MyFirstVideo.avi": Specifies the name of the video file to be created.
+
+images = [img for img in os.listdir(path) if img.lower().endswith(('.jpg', '.jpeg', '.png'))]: Creates a list of image files in the specified directory.
+
+if not images:: Checks if the list of images is empty.
+
+print("No images found in the directory."): Prints a message if no images are found.
+
+return: Exits the function if no images are found.
+
+frame = cv2.imread(os.path.join(path, images[0])): Reads the first image file to get its dimensions.
+
+height, width, _ = frame.shape: Gets the height and width of the first image.
+
+video = cv2.VideoWriter(video_name, cv2.VideoWriter_fourcc(*'DIVX'), 1, (width, height)): Creates a VideoWriter object to write the video. It specifies the video file name, codec (DIVX), frame rate (1 frame per second), and frame size (width and height of the images).
+
+for image in images:: Iterates over all image files in the list.
+
+video.write(cv2.imread(os.path.join(path, image))): Reads each image file and writes it to the video.
+
+cv2.destroyAllWindows(): Closes all OpenCV windows.
+
+video.release(): Releases the VideoWriter object, saving the video file.
+
+The path variable should be set to the directory where your images are located. You can then call the resize_images function to resize the images and the video_generator function to generate a video from the resized images.
